@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../core/routes.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
