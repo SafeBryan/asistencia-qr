@@ -2,6 +2,7 @@
     package="com.example.asistencia_qr">
 
     <!-- ✅ Permisos y características -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="true" />
 
