@@ -88,8 +88,12 @@ class _StudentHomePageState extends State<StudentHomePage> {
     final courseProvider = Provider.of<CourseProvider>(context);
 
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('Panel Estudiante'),
+        title: const Text(
+          'Panel Estudiante',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: [
           IconButton(
             onPressed: _logout,
@@ -99,23 +103,39 @@ class _StudentHomePageState extends State<StudentHomePage> {
         ],
       ),
       body: _sectionsFuture == null
-          ? const Center(
-              child: CircularProgressIndicator(),
-            ) // ✅ Loading inicial
+          ? const Center(child: CircularProgressIndicator())
           : FutureBuilder<List<dynamic>>(
               future: _sectionsFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return Center(child: Text('❌ Error: ${snapshot.error}'));
+                  return Center(
+                    child: Text(
+                      '❌ Error: ${snapshot.error}',
+                      style: const TextStyle(color: Colors.red),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                    child: Text('ℹ️ No estás inscrito en ninguna clase.'),
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.info_outline, size: 60, color: Colors.grey),
+                        SizedBox(height: 16),
+                        Text(
+                          'ℹ️ No estás inscrito en ninguna clase.',
+                          style: TextStyle(fontSize: 18, color: Colors.grey),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   );
                 } else {
                   final sections = snapshot.data!;
                   return ListView.builder(
+                    padding: const EdgeInsets.all(12),
                     itemCount: sections.length,
                     itemBuilder: (context, index) {
                       final section = sections[index];
@@ -129,23 +149,45 @@ class _StudentHomePageState extends State<StudentHomePage> {
                       final scheduleText = buildScheduleString(schedules);
 
                       return Card(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        elevation: 3,
+                        color: Colors.white,
+                        elevation: 4,
+                        shadowColor: Colors.black.withOpacity(0.1),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                        child: ListTile(
-                          title: Text(
-                            '📘 $courseName',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '📘 $courseName',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                '📖 Sección: $sectionName',
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                '⏰ Horario:',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                scheduleText,
+                                style: const TextStyle(fontSize: 15),
+                              ),
+                            ],
                           ),
-                          subtitle: Text(
-                            '📖 Sección: $sectionName\n⏰ Horario:\n$scheduleText',
-                          ),
-                          leading: const Icon(Icons.book),
                         ),
                       );
                     },
